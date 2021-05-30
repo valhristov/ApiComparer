@@ -5,7 +5,11 @@ namespace ApiComparer
     public record NormalizedProperty(
         string Name,
         string Type,
-        [property:JsonIgnore]string Description,
+        [property: JsonIgnore] string Description,
         bool IsRequired
-        );
+        )
+    {
+        [JsonIgnore]
+        public string Formatted => $"{Type} ({IsRequired})";
+    }
 }

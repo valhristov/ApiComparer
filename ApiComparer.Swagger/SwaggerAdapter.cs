@@ -38,6 +38,7 @@ namespace OmsApiComparer
                     var apiRequest = new NormalizedRequest(
                         $"api/v2/{{industry}}/{shortPath}",
                         industry,
+                        "Russia",
                         method,
                         GetQueryStringParameters(request),
                         GetRequestHeaders(request),

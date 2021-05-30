@@ -4,54 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OmsApiComparer.WPF"
+
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1000">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <ListBox ItemsSource="{Binding RequestCategories}" DisplayMemberPath="{Binding MethodAndPath}" SelectedItem="{Binding SelectedRequestCategory.Value}" />
+        <ListBox ItemsSource="{Binding RequestCategories}" DisplayMemberPath="MethodAndPath" SelectedItem="{Binding SelectedRequestCategory.Value}" />
 
         <ScrollViewer Grid.Column="1">
             <StackPanel>
                 <GroupBox Header="Query string parameters">
-                    <DataGrid ItemsSource="{Binding SelectedRequestCategory.Value.QueryStringParameters}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid ItemsSource="{Binding SelectedRequestCategory.Value.QueryString}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Property Name" Binding="{Binding BEER.Name}" />
-                            <DataGridTextColumn Header="BEER" Binding="{Binding BEER}" />
-                            <DataGridTextColumn Header="MILK" Binding="{Binding MILK}" />
-                            <DataGridTextColumn Header="NCP" Binding="{Binding NCP}" />
-                            <DataGridTextColumn Header="OTP" Binding="{Binding OTP}" />
-                            <DataGridTextColumn Header="TOBACCO" Binding="{Binding TOBACCO}" />
-                            <DataGridTextColumn Header="WATER" Binding="{Binding WATER}" />
+                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Value.Name}" />
+                            <DataGridTextColumn Header="A" Binding="{Binding A.Value.Formatted}" />
+                            <DataGridTextColumn Header="B" Binding="{Binding B.Value.Formatted}" />
+                            <DataGridTextColumn Header="C" Binding="{Binding C.Value.Formatted}" />
+                            <DataGridTextColumn Header="D" Binding="{Binding D.Value.Formatted}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
                 <GroupBox Header="Request headers">
-                    <DataGrid ItemsSource="{Binding SelectedRequestCategory.Value.RequestHeaders}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid ItemsSource="{Binding SelectedRequestCategory.Value.Headers}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Header Name" Binding="{Binding BEER.Name}" />
-                            <DataGridTextColumn Header="BEER" Binding="{Binding BEER}" />
-                            <DataGridTextColumn Header="MILK" Binding="{Binding MILK}" />
-                            <DataGridTextColumn Header="NCP" Binding="{Binding NCP}" />
-                            <DataGridTextColumn Header="OTP" Binding="{Binding OTP}" />
-                            <DataGridTextColumn Header="TOBACCO" Binding="{Binding TOBACCO}" />
-                            <DataGridTextColumn Header="WATER" Binding="{Binding WATER}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </GroupBox>
-                <GroupBox Header="Request payload">
-                    <DataGrid ItemsSource="{Binding SelectedRequestCategory.Value.RequestBodyProperties}" AutoGenerateColumns="False" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Header Name" Binding="{Binding BEER.Name}" />
-                            <DataGridTextColumn Header="BEER" Binding="{Binding BEER}" />
-                            <DataGridTextColumn Header="MILK" Binding="{Binding MILK}" />
-                            <DataGridTextColumn Header="NCP" Binding="{Binding NCP}" />
-                            <DataGridTextColumn Header="OTP" Binding="{Binding OTP}" />
-                            <DataGridTextColumn Header="TOBACCO" Binding="{Binding TOBACCO}" />
-                            <DataGridTextColumn Header="WATER" Binding="{Binding WATER}" />
+                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Value.Name}" />
+                            <DataGridTextColumn Header="A" Binding="{Binding A.Value.Formatted}" />
+                            <DataGridTextColumn Header="B" Binding="{Binding B.Value.Formatted}" />
+                            <DataGridTextColumn Header="C" Binding="{Binding C.Value.Formatted}" />
+                            <DataGridTextColumn Header="D" Binding="{Binding D.Value.Formatted}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
