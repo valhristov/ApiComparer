@@ -2,7 +2,7 @@
 
 namespace OmsApiComparer.WPF
 {
-    public record SourceValueViewModel(
+    public record PropertyWithSourceViewModel(
         string Source,
         NormalizedProperty Value
         );

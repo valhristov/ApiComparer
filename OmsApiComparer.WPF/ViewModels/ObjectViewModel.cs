@@ -2,8 +2,8 @@
 
 namespace OmsApiComparer.WPF
 {
-    public record RequestObjectViewModel(
+    public record ObjectViewModel(
         string Name,
-        ImmutableArray<ComparisonViewModel> Properties
+        ImmutableArray<PropertyViewModel> Properties
         );
 }

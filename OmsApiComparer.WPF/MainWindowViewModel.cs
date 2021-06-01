@@ -6,15 +6,15 @@ namespace OmsApiComparer.WPF
 {
     public class MainWindowViewModel
     {
-        public MainWindowViewModel(ImmutableArray<RequestComparisonViewModel> requests)
+        public MainWindowViewModel(ImmutableArray<RequestViewModel> requests)
         {
             RequestCategories = requests;
 
-            SelectedRequestCategory = new ObservableProperty<RequestComparisonViewModel>(requests.First());
+            SelectedRequestCategory = new ObservableProperty<RequestViewModel>(requests.First());
         }
 
-        public ImmutableArray<RequestComparisonViewModel> RequestCategories { get; }
+        public ImmutableArray<RequestViewModel> RequestCategories { get; }
 
-        public ObservableProperty<RequestComparisonViewModel> SelectedRequestCategory { get; }
+        public ObservableProperty<RequestViewModel> SelectedRequestCategory { get; }
     }
 }

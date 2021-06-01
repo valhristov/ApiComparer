@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -9,71 +10,70 @@ namespace OmsApiComparer.WPF
 {
     public partial class MainWindow : Window
     {
+        private static readonly ImmutableHashSet<string> _sourcesOfInterest =
+            ImmutableHashSet.Create("tobacco", "ncp", "otp", "milk");
+
         public MainWindow()
         {
             InitializeComponent();
 
             var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
 
-            var sources = requests.Select(x => x.Industry).Distinct().ToImmutableArray();
-
             var requestsByPath = requests.GroupBy(x => $"{x.Path} {x.Method}");
 
             DataContext = new MainWindowViewModel(
                 requestsByPath
                     .Select(samePathRequests =>
-                    {
-                        var xxx = CreateComparisonViewModels(sources, samePathRequests.Select(r => (r.Industry, r.QueryStringParamters)));
-                        var yyy = CreateComparisonViewModels(sources, samePathRequests.Select(r => (r.Industry, r.RequestHeaders)));
-
-                        var requestObjectNames = samePathRequests.SelectMany(r => r.RequestObjects).Select(o => o.Name).Distinct();
-
-                        var zzz = requestObjectNames
-                            .Select(name => new RequestObjectViewModel(name,
-                                CreateComparisonViewModels(
-                                    sources,
-                                    // Take all properties for the object with name name, from all requests
-                                    samePathRequests.Select(r =>
-                                        (r.Industry,
-                                         r.RequestObjects
-                                            .Where(o => o.Name == name)
-                                            .Select(o => o.Properties)
-                                            .Union(new[] { ImmutableArray<NormalizedProperty>.Empty })
-                                            .FirstOrDefault())).ToImmutableArray())))
-                            .ToImmutableArray();
-
-                        return new RequestComparisonViewModel(
+                        new RequestViewModel(
                             samePathRequests.Key,
-                            xxx,
-                            yyy,
-                            zzz);
-                    })
+                            CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
+                            CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
+                            CreateObjectViewModels(samePathRequests)))
                     .ToImmutableArray());
         }
 
-        private ImmutableArray<ComparisonViewModel> CreateComparisonViewModels(
-            ImmutableArray<string> sources,
-            IEnumerable<(string Industry, ImmutableArray<NormalizedProperty> Properties)> propertyContainers)
+        private ImmutableArray<ObjectViewModel> CreateObjectViewModels(
+            IEnumerable<NormalizedRequest> samePathRequests)
         {
-            var propertyNames = propertyContainers.SelectMany(x => x.Properties).Select(p => p.Name).Distinct();
-
-            var propertiesByIndustry = propertyContainers
-                .SelectMany(x => x.Properties.Select(p => (x.Industry, p)))
-                .ToLookup(x => x.Industry, x => x.p);
-
-            return propertyNames
-                .Select(name =>
-                    new ComparisonViewModel(
-                        name,
-                        GetSourceViewModel(sources.ElementAt(0), name),
-                        GetSourceViewModel(sources.ElementAt(1), name),
-                        GetSourceViewModel(sources.ElementAt(2), name),
-                        GetSourceViewModel(sources.ElementAt(3), name)
-                    ))
+            var objectViewModels = samePathRequests
+                .SelectMany(r => r.RequestObjects)
+                .Select(o => o.Name)
+                .Distinct()
+                .Select(CreateRequestObjectViewModel)
                 .ToImmutableArray();
 
-            SourceValueViewModel GetSourceViewModel(string source, string name) =>
-                new SourceValueViewModel(
+            return objectViewModels;
+
+            ObjectViewModel CreateRequestObjectViewModel(string objectName) =>
+                new ObjectViewModel(objectName,
+                    CreatePropertyViewModels(samePathRequests,
+                        r => r.RequestObjects.Where(o => o.Name == objectName).SelectMany(o => o.Properties)));
+        }
+
+        private ImmutableArray<PropertyViewModel> CreatePropertyViewModels(
+            IEnumerable<NormalizedRequest> samePathRequests,
+            Func<NormalizedRequest, IEnumerable<NormalizedProperty>> getProperties)
+        {
+            var propertyNames = samePathRequests.SelectMany(getProperties).Select(p => p.Name).Distinct();
+
+            var propertiesByIndustry = samePathRequests
+                .SelectMany(x => getProperties(x).Select(p => (x.Industry, p)))
+                .ToLookup(x => x.Industry, x => x.p);
+
+            var viewModels = propertyNames
+                .Select(name =>
+                    new PropertyViewModel(
+                        name,
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(0), name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(1), name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(2), name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(3), name)
+                    ))
+                .ToImmutableArray();
+            return viewModels;
+
+            PropertyWithSourceViewModel CreatePropertyWithSourceViewModel(string source, string name) =>
+                new PropertyWithSourceViewModel(
                     source,
                     propertiesByIndustry[source].FirstOrDefault(p => p.Name == name));
         }

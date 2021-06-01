@@ -43,7 +43,7 @@
                 <GroupBox Header="Request objects">
                     <ItemsControl ItemsSource="{Binding SelectedRequestCategory.Value.RequestObjects}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="{x:Type local:ObjectViewModel}">
                                 <GroupBox Header="{Binding Name}">
                                     <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
                                         <DataGrid.Columns>
