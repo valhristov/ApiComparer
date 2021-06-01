@@ -40,6 +40,25 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
+                <GroupBox Header="Request objects">
+                    <ItemsControl ItemsSource="{Binding SelectedRequestCategory.Value.RequestObjects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <GroupBox Header="{Binding Name}">
+                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Value.Name}" />
+                                            <DataGridTextColumn Header="A" Binding="{Binding A.Value.Formatted}" />
+                                            <DataGridTextColumn Header="B" Binding="{Binding B.Value.Formatted}" />
+                                            <DataGridTextColumn Header="C" Binding="{Binding C.Value.Formatted}" />
+                                            <DataGridTextColumn Header="D" Binding="{Binding D.Value.Formatted}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
             </StackPanel>
         </ScrollViewer>
     </Grid>

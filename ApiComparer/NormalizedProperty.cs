@@ -10,6 +10,6 @@ namespace ApiComparer
         )
     {
         [JsonIgnore]
-        public string Formatted => $"{Type} ({IsRequired})";
+        public string Formatted => $"{Type} ({(IsRequired ? "Required" : "Optional")})";
     }
 }

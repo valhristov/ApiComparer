@@ -99,11 +99,20 @@ namespace OmsApiComparer
                     }
                     properties = properties.Add(new NormalizedProperty(propertyName, propertyType, definition.Description, currentSchema.IsRequired(propertyName)));
                 }
-                result = result.Add(new NormalizedObject(currentSchema.Title, properties));
+                result = result.Add(new NormalizedObject(RemoveIndustry(currentSchema.Title), currentSchema.Title, properties));
             }
 
             return result;
         }
+
+        private static readonly string[] knownIndustries = new[] {
+            "beer", "bicycle", "light", "lp", "milk", "ncp", "otp",
+            "perfum", "pharma", "photo", "shoes", "tires", "tobacco",
+            "water", "wheelchairs", };
+
+        private static string RemoveIndustry(string title) =>
+            knownIndustries.Aggregate(title,
+                (currentTitle, industry) => currentTitle.Replace(industry, string.Empty, StringComparison.OrdinalIgnoreCase));
 
         private static ImmutableArray<NormalizedResponse> GetResponses(RequestDefinition request, Func<string, JsonSchema> getSchema)
         {
