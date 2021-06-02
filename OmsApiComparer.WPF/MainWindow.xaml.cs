@@ -39,7 +39,24 @@ namespace OmsApiComparer.WPF
                     pathAndMethod,
                     CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
                     CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
-                    CreateObjectViewModels(samePathRequests));
+                    CreateObjectViewModels(samePathRequests),
+                    CreateResponseObjectViewModels(samePathRequests));
+        }
+
+        private ImmutableArray<ObjectViewModel> CreateResponseObjectViewModels(IEnumerable<NormalizedRequest> samePathRequests)
+        {
+            var objectViewModels = samePathRequests
+                .SelectMany(r => r.Responses.SelectMany(res => res.ResponseObjects))
+                .Select(o => o.Name)
+                .Distinct()
+                .Select(CreateObjectViewModel)
+                .ToImmutableArray();
+
+            return objectViewModels;
+
+            ObjectViewModel CreateObjectViewModel(string objectName) =>
+                new ObjectViewModel(objectName,
+                    CreatePropertyViewModels(samePathRequests, r => r.Responses.SelectMany(res => res.ResponseObjects).Where(o => o.Name == objectName).SelectMany(o => o.Properties)));
         }
 
         private ImmutableArray<ObjectViewModel> CreateObjectViewModels(
@@ -49,12 +66,12 @@ namespace OmsApiComparer.WPF
                 .SelectMany(r => r.RequestObjects)
                 .Select(o => o.Name)
                 .Distinct()
-                .Select(CreateRequestObjectViewModel)
+                .Select(CreateObjectViewModel)
                 .ToImmutableArray();
 
             return objectViewModels;
 
-            ObjectViewModel CreateRequestObjectViewModel(string objectName) =>
+            ObjectViewModel CreateObjectViewModel(string objectName) =>
                 new ObjectViewModel(objectName,
                     CreatePropertyViewModels(samePathRequests,
                         r => r.RequestObjects.Where(o => o.Name == objectName).SelectMany(o => o.Properties)));

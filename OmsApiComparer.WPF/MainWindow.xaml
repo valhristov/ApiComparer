@@ -16,50 +16,69 @@
 
         <ListBox ItemsSource="{Binding Requests}" DisplayMemberPath="MethodAndPath"
                  SelectedItem="{Binding SelectedRequest.Value}" />
-
-        <ScrollViewer Grid.Column="1">
+        
+       <ScrollViewer Grid.Column="1">
             <StackPanel>
-                <GroupBox Header="Query string parameters">
+                <Expander Header="Query string parameters" IsExpanded="True">
                     <DataGrid ItemsSource="{Binding SelectedRequest.Value.QueryString}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Name}" />
-                            <DataGridTextColumn Header="Tobacco" Binding="{Binding A.Value}" />
-                            <DataGridTextColumn Header="NCP" Binding="{Binding B.Value}" />
-                            <DataGridTextColumn Header="OTP" Binding="{Binding C.Value}" />
-                            <DataGridTextColumn Header="Milk" Binding="{Binding D.Value}" />
+                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
+                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" />
+                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" />
+                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" />
+                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" />
                         </DataGrid.Columns>
                     </DataGrid>
-                </GroupBox>
-                <GroupBox Header="Request headers">
+                </Expander>
+                <Expander Header="Request headers" IsExpanded="True">
                     <DataGrid ItemsSource="{Binding SelectedRequest.Value.Headers}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Name}" />
-                            <DataGridTextColumn Header="Tobacco" Binding="{Binding A.Value}" />
-                            <DataGridTextColumn Header="NCP" Binding="{Binding B.Value}" />
-                            <DataGridTextColumn Header="OTP" Binding="{Binding C.Value}" />
-                            <DataGridTextColumn Header="Milk" Binding="{Binding D.Value}" />
+                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
+                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" />
+                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" />
+                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" />
+                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" />
                         </DataGrid.Columns>
                     </DataGrid>
-                </GroupBox>
-                <GroupBox Header="Request objects">
+                </Expander>
+                <Expander Header="Request objects" IsExpanded="True">
                     <ItemsControl ItemsSource="{Binding SelectedRequest.Value.RequestObjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ObjectViewModel}">
                                 <GroupBox Header="{Binding Name}">
                                     <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Property Name" Binding="{Binding A.Name}" />
-                                            <DataGridTextColumn Header="Tobacco" Binding="{Binding A.Value}" />
-                                            <DataGridTextColumn Header="NCP" Binding="{Binding B.Value}" />
-                                            <DataGridTextColumn Header="OTP" Binding="{Binding C.Value}" />
-                                            <DataGridTextColumn Header="Milk" Binding="{Binding D.Value}" />
+                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
+                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" />
+                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" />
+                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" />
+                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </GroupBox>
+                </Expander>
+                <Expander Header="Responses" IsExpanded="True">
+                    <ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseObjects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ObjectViewModel}">
+                                <GroupBox Header="{Binding Name}">
+                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
+                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" />
+                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" />
+                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" />
+                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
             </StackPanel>
         </ScrollViewer>
     </Grid>
