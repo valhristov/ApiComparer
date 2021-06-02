@@ -88,16 +88,17 @@ namespace OmsApiComparer
                             }
                             break;
                         case "object":
+                        case null:
                             if (property.Value.Reference != null)
                             {
-                                var nextSchema = getSchema(property.Value.Reference);
+                                var nextSchema = getSchema(property.Value.ReferenceKey);
                                 schemasToProcess.Enqueue(nextSchema);
                                 propertyType = nextSchema.Title;
                             }
                             break;
                         default: break; //do nothing
                     }
-                    properties = properties.Add(new NormalizedProperty(propertyName, propertyType, definition.Description, currentSchema.IsRequired(propertyName)));
+                    properties = properties.Add(new NormalizedProperty(propertyName, RemoveIndustry(propertyType), definition.Description, currentSchema.IsRequired(propertyName)));
                 }
                 result = result.Add(new NormalizedObject(RemoveIndustry(currentSchema.Title), currentSchema.Title, properties));
             }
@@ -105,8 +106,9 @@ namespace OmsApiComparer
             return result;
         }
 
+        // Light and Fashion are the same thing
         private static readonly string[] knownIndustries = new[] {
-            "beer", "bicycle", "light", "lp", "milk", "ncp", "otp",
+            "beer", "bicycle", "light", "fashion", "lp", "milk", "ncp", "otp",
             "perfum", "pharma", "photo", "shoes", "tires", "tobacco",
             "water", "wheelchairs", };
 

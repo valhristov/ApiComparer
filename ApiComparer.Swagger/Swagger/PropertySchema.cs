@@ -18,5 +18,7 @@ namespace OmsApiComparer.Swagger
 
         [JsonPropertyName("items")]
         public SchemaReference ItemsType { get; set; }
+
+        public string ReferenceKey => Reference == null ? null : Reference.Substring(Reference.LastIndexOf('/') + 1);
     }
 }
