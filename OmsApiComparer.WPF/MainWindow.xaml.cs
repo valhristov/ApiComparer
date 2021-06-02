@@ -10,8 +10,8 @@ namespace OmsApiComparer.WPF
 {
     public partial class MainWindow : Window
     {
-        private static readonly ImmutableHashSet<string> _sourcesOfInterest =
-            ImmutableHashSet.Create("tobacco", "ncp", "otp", "milk");
+        private static readonly ImmutableArray<string> _sourcesOfInterest =
+            ImmutableArray.Create("tobacco", "ncp", "otp", "milk");
 
         public MainWindow()
         {
@@ -23,13 +23,15 @@ namespace OmsApiComparer.WPF
 
             DataContext = new MainWindowViewModel(
                 requestsByPath
-                    .Select(samePathRequests =>
-                        new RequestViewModel(
-                            samePathRequests.Key,
-                            CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
-                            CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
-                            CreateObjectViewModels(samePathRequests)))
+                    .Select(samePathRequests => CreateRequestViewModel(samePathRequests.Key, samePathRequests))
                     .ToImmutableArray());
+
+            RequestViewModel CreateRequestViewModel(string pathAndMethod, IEnumerable<NormalizedRequest> samePathRequests) =>
+                new RequestViewModel(
+                    pathAndMethod,
+                    CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
+                    CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
+                    CreateObjectViewModels(samePathRequests));
         }
 
         private ImmutableArray<ObjectViewModel> CreateObjectViewModels(
@@ -64,19 +66,20 @@ namespace OmsApiComparer.WPF
                 .Select(name =>
                     new PropertyViewModel(
                         name,
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(0), name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(1), name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(2), name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest.ElementAt(3), name)
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[0], name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[1], name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[2], name),
+                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[3], name)
                     ))
                 .ToImmutableArray();
+
             return viewModels;
 
             PropertyWithSourceViewModel CreatePropertyWithSourceViewModel(string source, string name) =>
                 new PropertyWithSourceViewModel(
                     source,
+                    name,
                     propertiesByIndustry[source].FirstOrDefault(p => p.Name == name));
         }
-
     }
 }

@@ -4,6 +4,10 @@ namespace OmsApiComparer.WPF
 {
     public record PropertyWithSourceViewModel(
         string Source,
-        NormalizedProperty Value
-        );
+        string Name,
+        NormalizedProperty Property
+        )
+    {
+        public object Value => Property?.Formatted;
+    }
 }
