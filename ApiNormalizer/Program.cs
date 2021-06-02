@@ -2,15 +2,17 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using OmsApiComparer;
 
 namespace ApiNormalizer
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
+            var requests = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"));
+            //var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
 
             foreach (var r in requests)
             {

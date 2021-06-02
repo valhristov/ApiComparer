@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ApiComparer;
 using OmsApiComparer.Swagger;
 
@@ -12,6 +14,26 @@ namespace OmsApiComparer
     public static class SwaggerAdapter
     {
         private static readonly Regex _requestPathExtractor = new("/api/v2/(?<industry>[^/]+)/(?<path>.*)");
+
+        private static readonly Regex _apiExamplesFixer = new("(\"example\"\\:\\s*?\\[)(?<wrong>['\\w,\\s]+)+(\\])");
+
+        public static async Task<ImmutableArray<NormalizedRequest>> Read(Uri omsBaseUrl)
+        {
+            var client = new HttpClient { BaseAddress = omsBaseUrl };
+
+            var response = await client.GetStringAsync("v2/api-docs");
+
+            var json = Fix(response);
+
+            var document = JsonSerializer.Deserialize<ApiDefinition>(json);
+
+            return ToApiRequests(document).ToImmutableArray();
+        }
+
+        private static string Fix(string json)
+        {
+            return _apiExamplesFixer.Replace(json, "\"example\":[]");
+        }
 
         public static ImmutableArray<NormalizedRequest> Read(string swaggerDoc)
         {

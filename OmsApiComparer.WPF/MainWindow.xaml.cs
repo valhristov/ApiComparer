@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using ApiComparer;
 
@@ -17,7 +18,14 @@ namespace OmsApiComparer.WPF
         {
             InitializeComponent();
 
-            var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
+            CreateContext();
+        }
+
+        private async void CreateContext()
+        {
+            var requests = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"));
+
+            //var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
 
             var requestsByPath = requests.GroupBy(x => $"{x.Path} {x.Method}");
 
