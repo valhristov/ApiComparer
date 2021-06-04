@@ -19,15 +19,22 @@ namespace OmsApiComparer
 
         public static async Task<ImmutableArray<NormalizedRequest>> Read(Uri omsBaseUrl, string source)
         {
-            var client = new HttpClient { BaseAddress = omsBaseUrl };
+            try
+            {
+                var client = new HttpClient { BaseAddress = omsBaseUrl };
 
-            var response = await client.GetStringAsync("v2/api-docs");
+                var response = await client.GetStringAsync("v2/api-docs");
 
-            var json = Fix(response);
+                var json = Fix(response);
 
-            var document = JsonSerializer.Deserialize<ApiDefinition>(json);
+                var document = JsonSerializer.Deserialize<ApiDefinition>(json);
 
-            return ToApiRequests(document, source).ToImmutableArray();
+                return ToApiRequests(document, source).ToImmutableArray();
+            }
+            catch
+            {
+                return ImmutableArray<NormalizedRequest>.Empty;
+            }
         }
 
         private static string Fix(string json)
