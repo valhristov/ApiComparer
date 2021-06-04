@@ -13,7 +13,7 @@ namespace ApiNormalizer
         {
             var requestsRU = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"), "RU");
             var requestsKZ = await SwaggerAdapter.Read(new Uri("https://suzcloud.stage.ismet.kz"), "KZ");
-            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg/v2/api-docs"), "KG");
+            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg"), "KG");
 
             foreach (var r in requestsRU.Union(requestsKZ).Union(requestsKG))
             {
