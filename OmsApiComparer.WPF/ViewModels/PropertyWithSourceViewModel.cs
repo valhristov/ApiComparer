@@ -1,4 +1,5 @@
-﻿using ApiComparer;
+﻿using System.Collections.Immutable;
+using ApiComparer;
 
 namespace OmsApiComparer.WPF
 {
@@ -9,5 +10,11 @@ namespace OmsApiComparer.WPF
         )
     {
         public object Value => Property?.Formatted;
+
+        public bool IsCustomType =>
+            Property?.Type != null && !_types.Contains(Property.Type);
+
+        private static readonly ImmutableHashSet<string> _types =
+            ImmutableHashSet.Create("string", "integer", "boolean", "array");
     }
 }
