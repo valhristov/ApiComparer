@@ -7,6 +7,7 @@ namespace OmsApiComparer.WPF
         ImmutableArray<PropertyViewModel> QueryString,
         ImmutableArray<PropertyViewModel> Headers,
         ImmutableArray<ObjectViewModel> RequestObjects,
+        ImmutableArray<ResponseViewModel> Responses,
         ImmutableArray<ObjectViewModel> ResponseObjects
         );
 }

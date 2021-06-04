@@ -8,6 +8,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1000">
 
+    <Window.Resources>
+        <DataTemplate x:Key="ExpanderHeader">
+            <TextBlock TextBlock.FontWeight="Bold" TextBlock.FontSize="14" Text="{Binding}" />
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -16,10 +22,10 @@
 
         <ListBox ItemsSource="{Binding Requests}" DisplayMemberPath="MethodAndPath"
                  SelectedItem="{Binding SelectedRequest.Value}" />
-        
-       <ScrollViewer Grid.Column="1">
+
+        <ScrollViewer Grid.Column="1">
             <StackPanel>
-                <Expander Header="Query string parameters" IsExpanded="True">
+                <Expander Header="Query string parameters" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <DataGrid ItemsSource="{Binding SelectedRequest.Value.QueryString}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
@@ -30,7 +36,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Expander>
-                <Expander Header="Request headers" IsExpanded="True">
+                <Expander Header="Request headers" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <DataGrid ItemsSource="{Binding SelectedRequest.Value.Headers}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
@@ -41,7 +47,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Expander>
-                <Expander Header="Request objects" IsExpanded="True">
+                <Expander Header="Request objects" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <ItemsControl ItemsSource="{Binding SelectedRequest.Value.RequestObjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ObjectViewModel}">
@@ -60,7 +66,26 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Expander>
-                <Expander Header="Responses" IsExpanded="True">
+                <Expander Header="Responses" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
+                    <ItemsControl ItemsSource="{Binding SelectedRequest.Value.Responses}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ResponseViewModel}">
+                                <GroupBox Header="{Binding StatusCode}">
+                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" />
+                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" />
+                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" />
+                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" />
+                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Response Objects" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseObjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ObjectViewModel}">

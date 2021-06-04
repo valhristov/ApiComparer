@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using ApiComparer;
 
@@ -40,13 +38,32 @@ namespace OmsApiComparer.WPF
                     CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
                     CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
                     CreateObjectViewModels(samePathRequests),
+                    CreateResponseModels(samePathRequests),
                     CreateResponseObjectViewModels(samePathRequests));
+        }
+
+        private ImmutableArray<ResponseViewModel> CreateResponseModels(IEnumerable<NormalizedRequest> samePathRequests)
+        {
+            var responseViewModels = samePathRequests
+                .SelectMany(r => r.Responses.Select(res => res.StatusCode))
+                .Distinct()
+                .Select(CreateResponseViewModel)
+                .ToImmutableArray();
+
+            return responseViewModels;
+
+            ResponseViewModel CreateResponseViewModel(int statusCode) =>
+                new ResponseViewModel(statusCode.ToString(),
+                    CreatePropertyViewModels(samePathRequests, 
+                    //                                                                                                    The first is the actual response
+                        r => r.Responses.Where(res => res.StatusCode == statusCode).SelectMany(res => res.ResponseObjects.Take(1)).SelectMany(o => o.Properties)));
         }
 
         private ImmutableArray<ObjectViewModel> CreateResponseObjectViewModels(IEnumerable<NormalizedRequest> samePathRequests)
         {
             var objectViewModels = samePathRequests
-                .SelectMany(r => r.Responses.SelectMany(res => res.ResponseObjects))
+                //                                                                 The first is the actual response, we skip it because it is in the Responses collection
+                .SelectMany(r => r.Responses.SelectMany(res => res.ResponseObjects.Skip(1)))
                 .Select(o => o.Name)
                 .Distinct()
                 .Select(CreateObjectViewModel)
@@ -56,7 +73,9 @@ namespace OmsApiComparer.WPF
 
             ObjectViewModel CreateObjectViewModel(string objectName) =>
                 new ObjectViewModel(objectName,
-                    CreatePropertyViewModels(samePathRequests, r => r.Responses.SelectMany(res => res.ResponseObjects).Where(o => o.Name == objectName).SelectMany(o => o.Properties)));
+                    CreatePropertyViewModels(samePathRequests,
+                        //                                                     The first is the actual response, we skip it because it is in the Responses collection
+                        r => r.Responses.SelectMany(res => res.ResponseObjects.Skip(1)).Where(o => o.Name == objectName).SelectMany(o => o.Properties)));
         }
 
         private ImmutableArray<ObjectViewModel> CreateObjectViewModels(
