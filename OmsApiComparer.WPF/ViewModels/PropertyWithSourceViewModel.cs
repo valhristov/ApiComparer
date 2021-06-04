@@ -9,10 +9,10 @@ namespace OmsApiComparer.WPF
         NormalizedProperty Property
         )
     {
-        public object Value => Property?.Formatted;
-
         public bool IsCustomType =>
             Property?.Type != null && !_types.Contains(Property.Type);
+
+        public string Value => Property == null ? string.Empty : $"{(Property.IsRequired ? "Required" : "Optional")} ({Property.Type})";
 
         private static readonly ImmutableHashSet<string> _types =
             ImmutableHashSet.Create("string", "integer", "boolean", "array", "number");
