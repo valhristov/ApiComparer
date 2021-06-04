@@ -15,6 +15,6 @@ namespace OmsApiComparer.WPF
             Property?.Type != null && !_types.Contains(Property.Type);
 
         private static readonly ImmutableHashSet<string> _types =
-            ImmutableHashSet.Create("string", "integer", "boolean", "array");
+            ImmutableHashSet.Create("string", "integer", "boolean", "array", "number");
     }
 }

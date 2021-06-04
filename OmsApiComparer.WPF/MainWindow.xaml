@@ -12,32 +12,53 @@
         <DataTemplate x:Key="ExpanderHeader">
             <TextBlock TextBlock.FontWeight="Bold" TextBlock.FontSize="14" Text="{Binding}" />
         </DataTemplate>
+
         <DataTemplate x:Key="ObjectName">
-            <TextBlock TextBlock.FontWeight="Bold" TextBlock.FontSize="12" TextBlock.Foreground="Blue" Text="{Binding}" />
+            <TextBlock TextBlock.FontWeight="Bold" TextBlock.FontSize="14" Foreground="Blue" Text="{Binding}" />
         </DataTemplate>
-        <Style x:Key="PropertyNameStyle">
-            <Setter Property="TextBlock.FontWeight" Value="Bold" />
-        </Style>
-        <Style x:Key="PropertyValueStyle">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding A.IsCustomType}" Value="true">
+
+        <DataTemplate x:Key="ObjectTemplate" DataType="{x:Type local:ObjectViewModel}">
+            <DataTemplate.Resources>
+                <!--Change the font weight of property names-->
+                <Style x:Key="PropertyNameStyle">
                     <Setter Property="TextBlock.FontWeight" Value="Bold" />
-                    <Setter Property="TextBlock.Foreground" Value="Blue" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding B.IsCustomType}" Value="true">
-                    <Setter Property="TextBlock.FontWeight" Value="Bold" />
-                    <Setter Property="TextBlock.Foreground" Value="Blue" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding C.IsCustomType}" Value="true">
-                    <Setter Property="TextBlock.FontWeight" Value="Bold" />
-                    <Setter Property="TextBlock.Foreground" Value="Blue" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding D.IsCustomType}" Value="true">
-                    <Setter Property="TextBlock.FontWeight" Value="Bold" />
-                    <Setter Property="TextBlock.Foreground" Value="Blue" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+                </Style>
+                
+                <!--Change the color and font weight of properties with custom type (i.e. objects)-->
+                <Style x:Key="PropertyValueStyle">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding A.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding B.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding C.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding D.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                
+            </DataTemplate.Resources>
+            
+            <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
+                    <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
+                    <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DataTemplate>
+    
     </Window.Resources>
 
     <Grid>
@@ -51,81 +72,37 @@
 
         <ScrollViewer Grid.Column="1">
             <StackPanel>
-                <Expander Header="Query string parameters" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
-                    <DataGrid ItemsSource="{Binding SelectedRequest.Value.QueryString}" AutoGenerateColumns="False" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Expander>
-                <Expander Header="Request headers" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
-                    <DataGrid ItemsSource="{Binding SelectedRequest.Value.Headers}" AutoGenerateColumns="False" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Expander>
+                <Expander Header="Query string parameters" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True"
+                          Content="{Binding SelectedRequest.Value.QueryString}" ContentTemplate="{StaticResource ObjectTemplate}" />
+
+                <Expander Header="Request headers" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True"
+                          Content="{Binding SelectedRequest.Value.RequestHeaders}" ContentTemplate="{StaticResource ObjectTemplate}" />
+
                 <Expander Header="Request objects" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
-                    <ItemsControl ItemsSource="{Binding SelectedRequest.Value.RequestObjects}">
+                    <ItemsControl ItemsSource="{Binding SelectedRequest.Value.RequestObjects}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ObjectViewModel}">
-                                <GroupBox Header="{Binding Name}" HeaderTemplate="{StaticResource ObjectName}" >
-                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </GroupBox>
+                                <GroupBox Header="{Binding Name}" Content="{Binding}" HeaderTemplate="{StaticResource ObjectName}" ContentTemplate="{StaticResource ObjectTemplate}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Expander>
+
                 <Expander Header="Responses" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <ItemsControl ItemsSource="{Binding SelectedRequest.Value.Responses}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ResponseViewModel}">
-                                <GroupBox Header="{Binding StatusCode}">
-                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </GroupBox>
+                                <GroupBox Header="{Binding StatusCode}" Content="{Binding}" HeaderTemplate="{StaticResource ObjectName}" ContentTemplate="{StaticResource ObjectTemplate}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Expander>
+
                 <Expander Header="Response Objects" HeaderTemplate="{StaticResource ExpanderHeader}" IsExpanded="True">
                     <ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseObjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ObjectViewModel}">
-                                <GroupBox Header="{Binding Name}" HeaderTemplate="{StaticResource ObjectName}">
-                                    <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                            <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </GroupBox>
+                                <GroupBox Header="{Binding Name}" Content="{Binding}" HeaderTemplate="{StaticResource ObjectName}" ContentTemplate="{StaticResource ObjectTemplate}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

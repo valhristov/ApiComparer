@@ -4,8 +4,8 @@ namespace OmsApiComparer.WPF
 {
     public record RequestViewModel(
         string MethodAndPath,
-        ImmutableArray<PropertyViewModel> QueryString,
-        ImmutableArray<PropertyViewModel> Headers,
+        ObjectViewModel QueryString,
+        ObjectViewModel RequestHeaders,
         ImmutableArray<ObjectViewModel> RequestObjects,
         ImmutableArray<ResponseViewModel> Responses,
         ImmutableArray<ObjectViewModel> ResponseObjects

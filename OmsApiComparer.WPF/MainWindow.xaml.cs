@@ -35,8 +35,8 @@ namespace OmsApiComparer.WPF
             RequestViewModel CreateRequestViewModel(string pathAndMethod, IEnumerable<NormalizedRequest> samePathRequests) =>
                 new RequestViewModel(
                     pathAndMethod,
-                    CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters),
-                    CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders),
+                    new ObjectViewModel("Query string", CreatePropertyViewModels(samePathRequests, r => r.QueryStringParamters)),
+                    new ObjectViewModel("Request headers", CreatePropertyViewModels(samePathRequests, r => r.RequestHeaders)),
                     CreateObjectViewModels(samePathRequests),
                     CreateResponseModels(samePathRequests),
                     CreateResponseObjectViewModels(samePathRequests));
