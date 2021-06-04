@@ -10,10 +10,4 @@
     <ProjectReference Include="..\ApiComparer\ApiComparer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="ru.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
