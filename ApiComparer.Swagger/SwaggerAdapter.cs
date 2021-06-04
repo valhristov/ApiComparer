@@ -17,7 +17,7 @@ namespace OmsApiComparer
 
         private static readonly Regex _apiExamplesFixer = new("(\"example\"\\:\\s*?\\[)(?<wrong>['\\w,\\s]+)+(\\])");
 
-        public static async Task<ImmutableArray<NormalizedRequest>> Read(Uri omsBaseUrl)
+        public static async Task<ImmutableArray<NormalizedRequest>> Read(Uri omsBaseUrl, string source)
         {
             var client = new HttpClient { BaseAddress = omsBaseUrl };
 
@@ -27,22 +27,16 @@ namespace OmsApiComparer
 
             var document = JsonSerializer.Deserialize<ApiDefinition>(json);
 
-            return ToApiRequests(document).ToImmutableArray();
+            return ToApiRequests(document, source).ToImmutableArray();
         }
 
         private static string Fix(string json)
         {
+            // Some field examples have invalid JSON, this removes them
             return _apiExamplesFixer.Replace(json, "\"example\":[]");
         }
 
-        public static ImmutableArray<NormalizedRequest> Read(string swaggerDoc)
-        {
-            var document = JsonSerializer.Deserialize<ApiDefinition>(swaggerDoc);
-
-            return ToApiRequests(document).ToImmutableArray();
-        }
-
-        private static IEnumerable<NormalizedRequest> ToApiRequests(ApiDefinition document)
+        private static IEnumerable<NormalizedRequest> ToApiRequests(ApiDefinition document, string source)
         {
             foreach (var pathAndMethods in document.PathDefinitions)
             {
@@ -60,7 +54,7 @@ namespace OmsApiComparer
                     var apiRequest = new NormalizedRequest(
                         $"api/v2/{{industry}}/{shortPath}",
                         industry,
-                        "Russia",
+                        source,
                         method,
                         GetQueryStringParameters(request),
                         GetRequestHeaders(request),
@@ -128,11 +122,13 @@ namespace OmsApiComparer
             return result;
         }
 
-        // Light and Fashion are the same thing
         private static readonly string[] knownIndustries = new[] {
+            // Light and Fashion are the same thing
             "beer", "bicycle", "light", "fashion", "lp", "milk", "ncp", "otp",
             "perfum", "pharma", "photo", "shoes", "tires", "tobacco",
-            "water", "wheelchairs", };
+            "water", "wheelchairs",
+            // Adding KG and KZ here
+            "kg", "kz"};
 
         private static string RemoveIndustry(string title) =>
             knownIndustries.Aggregate(title,

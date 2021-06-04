@@ -11,12 +11,13 @@ namespace ApiNormalizer
     {
         static async Task Main(string[] args)
         {
-            var requests = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"));
-            //var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
+            var requestsRU = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"), "RU");
+            var requestsKZ = await SwaggerAdapter.Read(new Uri("https://suzcloud.stage.ismet.kz"), "KZ");
+            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg/v2/api-docs"), "KG");
 
-            foreach (var r in requests)
+            foreach (var r in requestsRU.Union(requestsKZ).Union(requestsKG))
             {
-                var path = $"c:\\work\\{DateTime.Now:yyMMddHHmm}\\{r.Industry}\\{NormalizePath(r.Path)} {r.Method.ToUpper()}.json";
+                var path = $"c:\\work\\{DateTime.Now:yyMMddHHmm}\\{r.Industry} {r.Source}\\{NormalizePath(r.Path)} {r.Method.ToUpper()}.json";
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, JsonSerializer.Serialize(r, new JsonSerializerOptions { WriteIndented = true }));
             }

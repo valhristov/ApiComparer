@@ -21,9 +21,11 @@ namespace OmsApiComparer.WPF
 
         private async void CreateContext()
         {
-            var requests = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"));
+            var requestsRU = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"), "RU");
+            var requestsKZ = await SwaggerAdapter.Read(new Uri("https://suzcloud.stage.ismet.kz"), "KZ");
+            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg"), "KG");
 
-            //var requests = SwaggerAdapter.Read(File.ReadAllText("ru.json"));
+            var requests = requestsRU.Union(requestsKZ).Union(requestsKG).Where(r => _sourcesOfInterest.Contains(r.Industry)).ToList();
 
             var requestsByPath = requests.GroupBy(x => $"{x.Path} {x.Method}");
 
@@ -103,17 +105,19 @@ namespace OmsApiComparer.WPF
             var propertyNames = samePathRequests.SelectMany(getProperties).Select(p => p.Name).Distinct();
 
             var propertiesByIndustry = samePathRequests
-                .SelectMany(x => getProperties(x).Select(p => (x.Industry, p)))
-                .ToLookup(x => x.Industry, x => x.p);
+                .SelectMany(x => getProperties(x).Select(p => (x.Industry, x.Source, p)))
+                .ToLookup(x => $"{x.Industry} {x.Source}", x => x.p);
 
             var viewModels = propertyNames
                 .Select(name =>
                     new PropertyViewModel(
                         name,
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[0], name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[1], name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[2], name),
-                        CreatePropertyWithSourceViewModel(_sourcesOfInterest[3], name)
+                        CreatePropertyWithSourceViewModel("tobacco RU", name),
+                        CreatePropertyWithSourceViewModel("ncp RU", name),
+                        CreatePropertyWithSourceViewModel("otp RU", name),
+                        CreatePropertyWithSourceViewModel("milk RU", name),
+                        CreatePropertyWithSourceViewModel("tobacco KZ", name),
+                        CreatePropertyWithSourceViewModel("tobacco KG", name)
                     ))
                 .ToImmutableArray();
 

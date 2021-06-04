@@ -2,9 +2,11 @@
 {
     public record PropertyViewModel(
         string Name,
-        PropertyWithSourceViewModel A,
-        PropertyWithSourceViewModel B,
-        PropertyWithSourceViewModel C,
-        PropertyWithSourceViewModel D
+        PropertyWithSourceViewModel TobaccoRU,
+        PropertyWithSourceViewModel NcpRU,
+        PropertyWithSourceViewModel OtpRU,
+        PropertyWithSourceViewModel MilkRU,
+        PropertyWithSourceViewModel TobaccoKZ,
+        PropertyWithSourceViewModel TobaccoKG
         );
 }

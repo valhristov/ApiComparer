@@ -6,7 +6,7 @@ namespace ApiComparer
     public record NormalizedRequest(
         string Path,
         [property: JsonIgnore] string Industry,
-        [property: JsonIgnore] string SourceApi,
+        [property: JsonIgnore] string Source,
         string Method,
         ImmutableArray<NormalizedProperty> QueryStringParamters,
         ImmutableArray<NormalizedProperty> RequestHeaders,

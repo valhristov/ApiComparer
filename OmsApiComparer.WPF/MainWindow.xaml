@@ -27,19 +27,27 @@
                 <!--Change the color and font weight of properties with custom type (i.e. objects)-->
                 <Style x:Key="PropertyValueStyle">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding A.IsCustomType}" Value="true">
+                        <DataTrigger Binding="{Binding TobaccoRU.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding B.IsCustomType}" Value="true">
+                        <DataTrigger Binding="{Binding NcpRU.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding C.IsCustomType}" Value="true">
+                        <DataTrigger Binding="{Binding OtpRU.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding D.IsCustomType}" Value="true">
+                        <DataTrigger Binding="{Binding MilkRU.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TobaccoKZ.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TobaccoKG.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
@@ -50,11 +58,13 @@
             
             <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Property Name" Binding="{Binding A.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
-                    <DataGridTextColumn Width="*" Header="Tobacco" Binding="{Binding A.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
-                    <DataGridTextColumn Width="*" Header="NCP" Binding="{Binding B.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="OTP" Binding="{Binding C.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="Milk" Binding="{Binding D.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="180" Header="Property Name" Binding="{Binding TobaccoRU.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
+                    <DataGridTextColumn Width="*" Header="Tobacco RU" Binding="{Binding TobaccoRU.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
+                    <DataGridTextColumn Width="*" Header="NCP RU" Binding="{Binding NcpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="OTP RU" Binding="{Binding OtpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Milk RU" Binding="{Binding MilkRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Tobacco KZ" Binding="{Binding TobaccoKZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Tobacco KG" Binding="{Binding TobaccoKG.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>
