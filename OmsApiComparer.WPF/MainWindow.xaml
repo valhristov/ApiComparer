@@ -43,6 +43,10 @@
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding WaterRU.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding TobaccoKZ.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
@@ -63,6 +67,7 @@
                     <DataGridTextColumn Width="*" Header="NCP RU" Binding="{Binding NcpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="OTP RU" Binding="{Binding OtpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Milk RU" Binding="{Binding MilkRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Water RU" Binding="{Binding WaterRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Tobacco KZ" Binding="{Binding TobaccoKZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Tobacco KG" Binding="{Binding TobaccoKG.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                 </DataGrid.Columns>

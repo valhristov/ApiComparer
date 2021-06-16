@@ -10,7 +10,7 @@ namespace OmsApiComparer.WPF
     public partial class MainWindow : Window
     {
         private static readonly ImmutableArray<string> _sourcesOfInterest =
-            ImmutableArray.Create("tobacco", "ncp", "otp", "milk");
+            ImmutableArray.Create("tobacco", "ncp", "otp", "milk", "water");
 
         public MainWindow()
         {
@@ -116,6 +116,7 @@ namespace OmsApiComparer.WPF
                         CreatePropertyWithSourceViewModel("ncp RU", name),
                         CreatePropertyWithSourceViewModel("otp RU", name),
                         CreatePropertyWithSourceViewModel("milk RU", name),
+                        CreatePropertyWithSourceViewModel("water RU", name),
                         CreatePropertyWithSourceViewModel("tobacco KZ", name),
                         CreatePropertyWithSourceViewModel("tobacco KG", name)
                     ))
