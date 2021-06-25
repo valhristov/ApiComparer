@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OmsApiComparer.Swagger
+namespace ApiComparer.Swagger.Dtos
 {
     internal class PropertySchema
     {
@@ -18,6 +18,9 @@ namespace OmsApiComparer.Swagger
 
         [JsonPropertyName("items")]
         public SchemaReference ItemsType { get; set; }
+
+        [JsonPropertyName("enum")]
+        public object[] Values { get; set; }
 
         public string ReferenceKey => Reference == null ? null : Reference.Substring(Reference.LastIndexOf('/') + 1);
     }

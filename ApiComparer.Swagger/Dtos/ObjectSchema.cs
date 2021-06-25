@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OmsApiComparer.Swagger
+namespace ApiComparer.Swagger.Dtos
 {
-    internal class JsonSchema
+    internal class ObjectSchema
     {
         [JsonPropertyName("title")]
         public string Title { get; set; }

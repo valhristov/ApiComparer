@@ -1,33 +1,22 @@
-﻿using System;
+﻿using ApiComparer.Swagger.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using ApiComparer;
-using OmsApiComparer.Swagger;
 
-namespace OmsApiComparer
+namespace ApiComparer.Swagger
 {
     public static class SwaggerAdapter
     {
         private static readonly Regex _requestPathExtractor = new("/api/v2/(?<industry>[^/]+)/(?<path>.*)");
 
-        private static readonly Regex _apiExamplesFixer = new("(\"example\"\\:\\s*?\\[)(?<wrong>['\\w,\\s]+)+(\\])");
-
-        public static async Task<ImmutableArray<NormalizedRequest>> Read(Uri omsBaseUrl, string source)
+        public static ImmutableArray<NormalizedRequest> Parse(string api, string source)
         {
             try
             {
-                var client = new HttpClient { BaseAddress = omsBaseUrl };
-
-                var response = await client.GetStringAsync("v2/api-docs");
-
-                var json = Fix(response);
-
-                var document = JsonSerializer.Deserialize<ApiDefinition>(json);
+                var document = JsonSerializer.Deserialize<ApiDefinition>(api);
 
                 return ToApiRequests(document, source).ToImmutableArray();
             }
@@ -35,12 +24,6 @@ namespace OmsApiComparer
             {
                 return ImmutableArray<NormalizedRequest>.Empty;
             }
-        }
-
-        private static string Fix(string json)
-        {
-            // Some field examples have invalid JSON, this removes them
-            return _apiExamplesFixer.Replace(json, "\"example\":[]");
         }
 
         private static IEnumerable<NormalizedRequest> ToApiRequests(ApiDefinition document, string source)
@@ -72,11 +55,11 @@ namespace OmsApiComparer
                 }
             }
 
-            JsonSchema GetSchema(string name) =>
+            ObjectSchema GetSchema(string name) =>
                 document.Schemas.TryGetValue(name, out var schema) ? schema : null;
         }
 
-        private static ImmutableArray<NormalizedObject> GetRequestObjects(RequestDefinition request, Func<string, JsonSchema> getSchema)
+        private static ImmutableArray<NormalizedObject> GetRequestObjects(RequestDefinition request, Func<string, ObjectSchema> getSchema)
         {
             var bodyParameter = request.Parameters?.Where(p => p.Location == "body").SingleOrDefault();
 
@@ -85,10 +68,10 @@ namespace OmsApiComparer
                 : ToObjectDefinitionRecursive(getSchema(bodyParameter.Schema.Key), getSchema);
         }
 
-        private static ImmutableArray<NormalizedObject> ToObjectDefinitionRecursive(JsonSchema schema, Func<string, JsonSchema> getSchema)
+        private static ImmutableArray<NormalizedObject> ToObjectDefinitionRecursive(ObjectSchema schema, Func<string, ObjectSchema> getSchema)
         {
             var result = ImmutableArray<NormalizedObject>.Empty;
-            var schemasToProcess = new Queue<JsonSchema>();
+            var schemasToProcess = new Queue<ObjectSchema>();
             schemasToProcess.Enqueue(schema);
 
             while (schemasToProcess.Count > 0)
@@ -98,35 +81,71 @@ namespace OmsApiComparer
                 foreach (var property in currentSchema.Properties)
                 {
                     var propertyName = property.Key;
-                    var definition = property.Value;
-                    var propertyType = definition.Type;
-                    switch (property.Value.Type)
+                    var propertySchema = property.Value;
+                    var propertyType = propertySchema.Type;
+                    switch (propertyType)
                     {
                         case "array":
-                            if (property.Value.ItemsType?.Key != null)
+                            if (propertySchema.ItemsType?.Key != null)
                             {
-                                var nextSchema = getSchema(property.Value.ItemsType.Key);
+                                var nextSchema = getSchema(propertySchema.ItemsType.Key);
                                 schemasToProcess.Enqueue(nextSchema);
                                 propertyType = nextSchema.Title + "[]";
                             }
                             break;
                         case "object":
                         case null:
-                            if (property.Value.Reference != null)
+                            if (propertySchema.Reference != null)
                             {
-                                var nextSchema = getSchema(property.Value.ReferenceKey);
+                                var nextSchema = getSchema(propertySchema.ReferenceKey);
                                 schemasToProcess.Enqueue(nextSchema);
                                 propertyType = nextSchema.Title;
                             }
                             break;
+                        case "string":
+                            if (propertySchema.Values != null)
+                            {
+                                result = result.Add(new NormalizedObject(propertyName, propertyName, propertySchema.Values.Select(v => new NormalizedProperty(v.ToString(), propertyType, string.Empty, false)).ToImmutableArray()));
+                                propertyType = propertyName;
+                            }
+                            break;
+                        case "integer":
+                            if (propertySchema.Values != null)
+                            {
+                                result = result.Add(new NormalizedObject(propertyName, propertyName, propertySchema.Values.Select(v => new NormalizedProperty(v.ToString(), propertyType, string.Empty, false)).ToImmutableArray()));
+                                propertyType = propertyName;
+                            }
+                            break;
                         default: break; //do nothing
                     }
-                    properties = properties.Add(new NormalizedProperty(propertyName, RemoveIndustry(propertyType), definition.Description, currentSchema.IsRequired(propertyName)));
+                    properties = properties.Add(new NormalizedProperty(propertyName, RemoveIndustry(propertyType), propertySchema.Description, currentSchema.IsRequired(propertyName)));
                 }
                 result = result.Add(new NormalizedObject(RemoveIndustry(currentSchema.Title), currentSchema.Title, properties));
             }
 
             return result;
+        }
+
+        private static ObjectSchema CreateEnum<T>(string name, T[] values) =>
+            new ObjectSchema
+            {
+                Title = UpperCaseFirstLetter(name),
+                Properties = values
+                    .Where(v => v != null)
+                    .Select(v => (Name: v.ToString(), Property: new PropertySchema { Type = "enum", }))
+                    .ToDictionary(x => x.Name, x => x.Property),
+            };
+
+        public static string UpperCaseFirstLetter(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                throw new ArgumentException("There is no first letter");
+
+            return string.Create(s.Length, s, (chars, state) =>
+            {
+                state.AsSpan().CopyTo(chars);
+                chars[0] = char.ToUpper(chars[0]);
+            });
         }
 
         private static readonly string[] knownIndustries = new[] {
@@ -141,7 +160,7 @@ namespace OmsApiComparer
             knownIndustries.Aggregate(title,
                 (currentTitle, industry) => currentTitle.Replace(industry, string.Empty, StringComparison.OrdinalIgnoreCase));
 
-        private static ImmutableArray<NormalizedResponse> GetResponses(RequestDefinition request, Func<string, JsonSchema> getSchema)
+        private static ImmutableArray<NormalizedResponse> GetResponses(RequestDefinition request, Func<string, ObjectSchema> getSchema)
         {
             return request.Responses == null
                 ? ImmutableArray<NormalizedResponse>.Empty

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ApiComparer;
+using ApiComparer.Swagger;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Windows;
-using ApiComparer;
 
 namespace OmsApiComparer.WPF
 {
@@ -21,9 +22,9 @@ namespace OmsApiComparer.WPF
 
         private async void CreateContext()
         {
-            var requestsRU = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"), "RU");
-            var requestsKZ = await SwaggerAdapter.Read(new Uri("https://suzcloud.stage.ismet.kz"), "KZ");
-            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg"), "KG");
+            var requestsRU = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crpt.tech")), "RU");
+            var requestsKZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz")), "KZ");
+            var requestsKG = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg")), "KG");
 
             var requests = requestsRU.Union(requestsKZ).Union(requestsKG).Where(r => _sourcesOfInterest.Contains(r.Industry)).ToList();
 

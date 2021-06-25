@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OmsApiComparer.Swagger
+namespace ApiComparer.Swagger.Dtos
 {
     internal class RequestDefinition
     {

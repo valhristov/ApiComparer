@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ApiComparer.Swagger;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using OmsApiComparer;
 
 namespace ApiNormalizer
 {
@@ -11,9 +11,12 @@ namespace ApiNormalizer
     {
         static async Task Main(string[] args)
         {
-            var requestsRU = await SwaggerAdapter.Read(new Uri("https://intuot.crpt.ru:12011"), "RU");
-            var requestsKZ = await SwaggerAdapter.Read(new Uri("https://suzcloud.stage.ismet.kz"), "KZ");
-            var requestsKG = await SwaggerAdapter.Read(new Uri("https://oms.megacom.kg"), "KG");
+            ////var requestsRU = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crpt.tech")), "RU");
+            ////var requestsKZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz")), "KZ");
+            ////var requestsKG = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg")), "KG");
+            var requestsRU = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\ru.json"), "RU");
+            var requestsKZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kz.json"), "KZ");
+            var requestsKG = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kg.json"), "KG");
 
             foreach (var r in requestsRU.Union(requestsKZ).Union(requestsKG))
             {

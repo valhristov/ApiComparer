@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OmsApiComparer.Swagger
+namespace ApiComparer.Swagger.Dtos
 {
     internal class ApiDefinition
     {
@@ -10,6 +10,6 @@ namespace OmsApiComparer.Swagger
         [JsonPropertyName("paths")]
         public Dictionary<string, Dictionary<string, RequestDefinition>> PathDefinitions { get; set; }
         [JsonPropertyName("definitions")]
-        public Dictionary<string, JsonSchema> Schemas { get; set; }
+        public Dictionary<string, ObjectSchema> Schemas { get; set; }
     }
 }
