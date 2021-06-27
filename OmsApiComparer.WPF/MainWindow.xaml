@@ -23,43 +23,57 @@
                 <Style x:Key="PropertyNameStyle">
                     <Setter Property="TextBlock.FontWeight" Value="Bold" />
                 </Style>
-                
+
                 <!--Change the color and font weight of properties with custom type (i.e. objects)-->
                 <Style x:Key="PropertyValueStyle">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding TobaccoRU.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TobaccoRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding NcpRU.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding NcpRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding OtpRU.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding OtpRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MilkRU.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding MilkRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding WaterRU.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WaterRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding TobaccoKZ.IsCustomType}" Value="true">
-                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding TobaccoKG.IsCustomType}" Value="true">
+                        <DataTrigger Binding="{Binding TobaccoKZ.IsRequired}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TobaccoKG.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TobaccoKG.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-                
+
             </DataTemplate.Resources>
-            
+
             <DataGrid ItemsSource="{Binding Properties}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="180" Header="Property Name" Binding="{Binding TobaccoRU.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
@@ -73,7 +87,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>
-    
+
     </Window.Resources>
 
     <Grid>
