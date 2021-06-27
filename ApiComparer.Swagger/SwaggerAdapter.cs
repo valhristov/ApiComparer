@@ -82,59 +82,53 @@ namespace ApiComparer.Swagger
                 {
                     var propertyName = property.Key;
                     var propertySchema = property.Value;
-                    var propertyType = propertySchema.Type;
-                    switch (propertyType)
+                    var (propertyType, propertyTypeSchema) = GetPropertyTypeAndSchema(propertyName, property.Value, getSchema);
+                    if (propertyTypeSchema != null)
                     {
-                        case "array":
-                            if (propertySchema.ItemsType?.Key != null)
-                            {
-                                var nextSchema = getSchema(propertySchema.ItemsType.Key);
-                                schemasToProcess.Enqueue(nextSchema);
-                                propertyType = nextSchema.Title + "[]";
-                            }
-                            break;
-                        case "object":
-                        case null:
-                            if (propertySchema.Reference != null)
-                            {
-                                var nextSchema = getSchema(propertySchema.ReferenceKey);
-                                schemasToProcess.Enqueue(nextSchema);
-                                propertyType = nextSchema.Title;
-                            }
-                            break;
-                        case "string":
-                            if (propertySchema.Values != null)
-                            {
-                                result = result.Add(new NormalizedObject(propertyName, propertyName, propertySchema.Values.Select(v => new NormalizedProperty(v.ToString(), propertyType, string.Empty, false)).ToImmutableArray()));
-                                propertyType = propertyName;
-                            }
-                            break;
-                        case "integer":
-                            if (propertySchema.Values != null)
-                            {
-                                result = result.Add(new NormalizedObject(propertyName, propertyName, propertySchema.Values.Select(v => new NormalizedProperty(v.ToString(), propertyType, string.Empty, false)).ToImmutableArray()));
-                                propertyType = propertyName;
-                            }
-                            break;
-                        default: break; //do nothing
+                        schemasToProcess.Enqueue(propertyTypeSchema);
                     }
-                    properties = properties.Add(new NormalizedProperty(propertyName, RemoveIndustry(propertyType), propertySchema.Description, currentSchema.IsRequired(propertyName)));
+                    properties = properties.Add(
+                        new NormalizedProperty(
+                            propertyName,
+                            RemoveIndustry(propertyType),
+                            propertySchema.Description,
+                            currentSchema.IsRequired(propertyName)));
                 }
-                result = result.Add(new NormalizedObject(RemoveIndustry(currentSchema.Title), currentSchema.Title, properties));
+                result = result.Add(
+                    new NormalizedObject(
+                        RemoveIndustry(currentSchema.Title),
+                        currentSchema.Title,
+                        properties));
             }
 
             return result;
         }
 
-        private static ObjectSchema CreateEnum<T>(string name, T[] values) =>
-            new ObjectSchema
+        private static (string, ObjectSchema) GetPropertyTypeAndSchema(string propertyName, PropertySchema propertySchema, Func<string, ObjectSchema> getSchema)
+        {
+            return propertySchema.Type switch
             {
-                Title = UpperCaseFirstLetter(name),
-                Properties = values
-                    .Where(v => v != null)
-                    .Select(v => (Name: v.ToString(), Property: new PropertySchema { Type = "enum", }))
-                    .ToDictionary(x => x.Name, x => x.Property),
+                "array" when propertySchema.ItemsType?.Key != null &&
+                    getSchema(propertySchema.ItemsType.Key) is ObjectSchema nextSchema =>
+                        (nextSchema.Title + "[]", nextSchema),
+                "object" or null when propertySchema.Reference != null &&
+                    getSchema(propertySchema.ReferenceKey) is ObjectSchema nextSchema =>
+                        (nextSchema.Title, nextSchema),
+                "string" or "integer" when propertySchema.EnumValues != null =>
+                    GetEnumObjectSchema(UpperCaseFirstLetter(propertyName) + "Enum", propertySchema.EnumValues),
+                _ => (propertySchema.Type, null),
             };
+
+            (string, ObjectSchema) GetEnumObjectSchema(string propertyType, object[] enumValues) =>
+                (propertyType,
+                new ObjectSchema
+                {
+                    Title = propertyType,
+                    Properties = enumValues.ToDictionary(
+                        p => p.ToString(),
+                        p => new PropertySchema { Type = propertySchema.Type }), // the actual property type
+                });
+        }
 
         public static string UpperCaseFirstLetter(string s)
         {
