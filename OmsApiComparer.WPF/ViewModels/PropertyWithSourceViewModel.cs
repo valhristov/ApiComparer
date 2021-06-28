@@ -14,7 +14,7 @@ namespace OmsApiComparer.WPF
 
         public bool IsRequired => Property != null && Property.IsRequired;
 
-        public string Value => Property == null ? string.Empty : $"{Property.Type} {(IsRequired ? "(Required)" : "")}";
+        public string Value => Property == null ? string.Empty : $"{Property.Type} {(IsRequired ? "(*)" : "")}";
 
         private static readonly ImmutableHashSet<string> _types =
             ImmutableHashSet.Create("string", "integer", "boolean", "array", "number");
