@@ -57,6 +57,12 @@
                         <DataTrigger Binding="{Binding WaterRU.IsRequired}" Value="true">
                             <Setter Property="TextBlock.FontWeight" Value="Bold" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding BeerRU.IsCustomType}" Value="true">
+                            <Setter Property="TextBlock.Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BeerRU.IsRequired}" Value="true">
+                            <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding TobaccoKZ.IsCustomType}" Value="true">
                             <Setter Property="TextBlock.Foreground" Value="Blue" />
                         </DataTrigger>
@@ -78,12 +84,13 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="180" Header="Property Name" Binding="{Binding TobaccoRU.Name}" CellStyle="{StaticResource PropertyNameStyle}" />
                     <DataGridTextColumn Width="*" Header="Tobacco RU" Binding="{Binding TobaccoRU.Value}" CellStyle="{StaticResource PropertyValueStyle}" />
+                    <DataGridTextColumn Width="*" Header="Tobacco KZ" Binding="{Binding TobaccoKZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Tobacco KG" Binding="{Binding TobaccoKG.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="NCP RU" Binding="{Binding NcpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="OTP RU" Binding="{Binding OtpRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Milk RU" Binding="{Binding MilkRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Water RU" Binding="{Binding WaterRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="Tobacco KZ" Binding="{Binding TobaccoKZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="Tobacco KG" Binding="{Binding TobaccoKG.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Beer RU" Binding="{Binding BeerRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>
