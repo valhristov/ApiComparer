@@ -22,11 +22,17 @@ namespace OmsApiComparer.WPF
 
         private async void CreateContext()
         {
-            var requestsRU = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crpt.tech")), "RU");
-            var requestsKZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz")), "KZ");
-            var requestsKG = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg")), "KG");
+            var requestsRU = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\ru.json"), "RU");
+            var requestsKZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kz.json"), "KZ");
+            var requestsKG = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kg.json"), "KG");
+            var requestsUZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\uz.json"), "UZ");
+            //var requestsRU = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crpt.tech")), "RU");
+            //var requestsKZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz")), "KZ");
+            //var requestsKG = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg")), "KG");
+            //var requestsUZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://omscloud.asllikbelgisi.uz")), "UZ");
 
-            var requests = requestsRU.Union(requestsKZ).Union(requestsKG).Where(r => _sourcesOfInterest.Contains(r.Industry)).ToList();
+            var requests = requestsRU.Union(requestsKZ).Union(requestsKG).Union(requestsUZ)
+                .Where(r => _sourcesOfInterest.Contains(r.Industry)).ToList();
 
             var requestsByPath = requests.GroupBy(x => $"{x.Path} {x.Method}");
 
@@ -120,7 +126,10 @@ namespace OmsApiComparer.WPF
                         CreatePropertyWithSourceViewModel("water RU", name),
                         CreatePropertyWithSourceViewModel("beer RU", name),
                         CreatePropertyWithSourceViewModel("tobacco KZ", name),
-                        CreatePropertyWithSourceViewModel("tobacco KG", name)
+                        CreatePropertyWithSourceViewModel("tobacco KG", name),
+                        CreatePropertyWithSourceViewModel("tobacco UZ", name),
+                        CreatePropertyWithSourceViewModel("beer UZ", name),
+                        CreatePropertyWithSourceViewModel("water UZ", name)
                     ))
                 .ToImmutableArray();
 

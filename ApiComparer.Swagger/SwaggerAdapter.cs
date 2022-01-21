@@ -146,9 +146,9 @@ namespace ApiComparer.Swagger
             // Light and Fashion are the same thing
             "beer", "bicycle", "light", "fashion", "lp", "milk", "ncp", "otp",
             "perfum", "pharma", "photo", "shoes", "tires", "tobacco",
-            "water", "wheelchairs",
-            // Adding KG and KZ here
-            "kg", "kz"};
+            "water", "wheelchairs", "appliances", "alcohol", "antiseptic", "bio",
+            // Adding KG, KZ and UZ here to be able to remove the suffixes
+            "kg", "kz", "uz"};
 
         private static string RemoveIndustry(string title) =>
             knownIndustries.Aggregate(title,
@@ -158,7 +158,7 @@ namespace ApiComparer.Swagger
         {
             return request.Responses == null
                 ? ImmutableArray<NormalizedResponse>.Empty
-                : request.Responses.Select(ToApiResponse).ToImmutableArray();
+                : request.Responses.Where(x => x.Value.Schema.Key != null).Select(ToApiResponse).ToImmutableArray();
 
             NormalizedResponse ToApiResponse(KeyValuePair<string, ResponseReference> arg1)
             {

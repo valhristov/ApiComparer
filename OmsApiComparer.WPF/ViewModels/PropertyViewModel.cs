@@ -9,6 +9,9 @@
         PropertyWithSourceViewModel WaterRU,
         PropertyWithSourceViewModel BeerRU,
         PropertyWithSourceViewModel TobaccoKZ,
-        PropertyWithSourceViewModel TobaccoKG
+        PropertyWithSourceViewModel TobaccoKG,
+        PropertyWithSourceViewModel TobaccoUZ,
+        PropertyWithSourceViewModel BeerUZ,
+        PropertyWithSourceViewModel WaterUZ
         );
 }
