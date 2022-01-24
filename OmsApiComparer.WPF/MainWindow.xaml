@@ -92,8 +92,8 @@
                     <DataGridTextColumn Width="*" Header="Milk RU" Binding="{Binding MilkRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Water RU" Binding="{Binding WaterRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                     <DataGridTextColumn Width="*" Header="Beer RU" Binding="{Binding BeerRU.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="Water RU" Binding="{Binding WaterUZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
-                    <DataGridTextColumn Width="*" Header="Beer RU" Binding="{Binding BeerUZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Water UZ" Binding="{Binding WaterUZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
+                    <DataGridTextColumn Width="*" Header="Beer UZ" Binding="{Binding BeerUZ.Value}" CellStyle="{StaticResource PropertyValueStyle}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>
