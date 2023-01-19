@@ -22,14 +22,14 @@ namespace OmsApiComparer.WPF
 
         private async void CreateContext()
         {
-            var requestsRU = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\ru.json"), "RU");
-            var requestsKZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kz.json"), "KZ");
-            var requestsKG = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kg.json"), "KG");
-            var requestsUZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\uz.json"), "UZ");
-            //var requestsRU = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crpt.tech")), "RU");
-            //var requestsKZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz")), "KZ");
-            //var requestsKG = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg")), "KG");
-            //var requestsUZ = SwaggerAdapter.Parse(await SwaggerDownloader.Download(new Uri("https://omscloud.asllikbelgisi.uz")), "UZ");
+            //var requestsRU = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\ru.json"), "RU");
+            //var requestsKZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kz.json"), "KZ");
+            //var requestsKG = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\kg.json"), "KG");
+            //var requestsUZ = SwaggerAdapter.Parse(await SwaggerFileReader.Read("C:\\Work\\OmsApi\\uz.json"), "UZ");
+            var requestsRU = SwaggerAdapter.Parse(SwaggerFixer.Fix(await SwaggerDownloader.Download(new Uri("https://suz.sandbox.crptech.ru"))), "RU");
+            var requestsKZ = SwaggerAdapter.Parse(SwaggerFixer.Fix(await SwaggerDownloader.Download(new Uri("https://suzcloud.stage.ismet.kz"))), "KZ");
+            var requestsKG = SwaggerAdapter.Parse(SwaggerFixer.Fix(await SwaggerDownloader.Download(new Uri("https://oms.megacom.kg"))), "KG");
+            var requestsUZ = SwaggerAdapter.Parse(SwaggerFixer.Fix(await SwaggerDownloader.Download(new Uri("https://omscloud.asllikbelgisi.uz"))), "UZ");
 
             var requests = requestsRU.Union(requestsKZ).Union(requestsKG).Union(requestsUZ)
                 .Where(r => _sourcesOfInterest.Contains(r.Industry)).ToList();
